@@ -4,162 +4,293 @@ import UniformTypeIdentifiers
 struct EnhancedSettingsView: View {
     @ObservedObject private var config = DocumentProcessorConfig.shared
     @ObservedObject private var library = DocLibraryIndex.shared
+    @State private var hoveredSection: String? = nil
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
+            VStack(alignment: .leading, spacing: 12) {
                 Text("Settings")
-                    .font(.largeTitle)
+                    .font(.title)
                     .fontWeight(.bold)
+                    .foregroundColor(.primary)
                 
                 processingSettingsSection
-                
-                deepCrawlSettingsSection
-                
                 javascriptRenderingSection
-                
                 aiEnhancementSection
-                
                 libraryManagementSection
             }
-            .padding()
+            .padding(16)
         }
+        .background(Color.clear)
         .navigationTitle("Settings")
     }
     
     private var processingSettingsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Processing Settings")
-                .font(.headline)
-                .fontWeight(.semibold)
+            HStack {
+                Image(systemName: "gearshape.fill")
+                    .foregroundColor(.blue)
+                    .font(.title2)
+                Text("Processing & Deep Scraping")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+            }
             
-            Toggle("Allow Duplicate Documents", isOn: $config.allowDuplicates)
-            
-            if !config.allowDuplicates {
-                Toggle("Smart Duplicate Handling", isOn: $config.smartDuplicateHandling)
+            VStack(alignment: .leading, spacing: 12) {
+                Toggle("Enable Deep Scraping", isOn: $config.enableDeepCrawling)
+                    .toggleStyle(LiquidGlassToggleStyle())
                 
-                if config.smartDuplicateHandling {
-                    Toggle("Check for Content Updates", isOn: $config.checkForUpdates)
+                if config.enableDeepCrawling {
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Text("Max Crawl Depth")
+                                .font(.subheadline)
+                            Spacer()
+                            Text("\(config.maxCrawlDepth)")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        Slider(value: Binding(
+                            get: { Double(config.maxCrawlDepth) },
+                            set: { config.maxCrawlDepth = Int($0) }
+                        ), in: 1...10, step: 1)
+                        .accentColor(.blue)
+                    }
+                    .padding(.leading, 8)
+                    
+                    Toggle("Follow External Links", isOn: $config.followExternalLinks)
+                        .toggleStyle(LiquidGlassToggleStyle())
+                }
+                
+                Divider()
+                    .opacity(0.3)
+                
+                Toggle("Allow Duplicate Documents", isOn: $config.allowDuplicates)
+                    .toggleStyle(LiquidGlassToggleStyle())
+                
+                if !config.allowDuplicates {
+                    Toggle("Smart Duplicate Handling", isOn: $config.smartDuplicateHandling)
+                        .toggleStyle(LiquidGlassToggleStyle())
+                        .padding(.leading, 8)
+                    
+                    if config.smartDuplicateHandling {
+                        Toggle("Check for Content Updates", isOn: $config.checkForUpdates)
+                            .toggleStyle(LiquidGlassToggleStyle())
+                            .padding(.leading, 16)
+                    }
                 }
             }
         }
-        .padding()
-        .background(Color(.controlBackgroundColor))
-        .cornerRadius(8)
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+                .shadow(color: .gray.opacity(0.5), radius: 8, x: 0, y: 4)
+        )
+        .scaleEffect(hoveredSection == "processing" ? 1.02 : 1.0)
+        .animation(.easeInOut(duration: 0.8), value: hoveredSection)
+        .onHover { isHovered in
+            hoveredSection = isHovered ? "processing" : nil
+        }
     }
     
-    private var deepCrawlSettingsSection: some View {
+    
+    private var javascriptRenderingSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text("Deep Crawling")
-                .font(.headline)
-                .fontWeight(.semibold)
+            HStack {
+                Image(systemName: "curlybraces")
+                    .foregroundColor(.green)
+                    .font(.title2)
+                Text("JavaScript Rendering")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+            }
             
-            Toggle("Enable Deep Crawling", isOn: $config.enableDeepCrawling)
+            VStack(alignment: .leading, spacing: 12) {
+                Toggle("Enable JavaScript Rendering", isOn: $config.enableJavaScriptRendering)
+                    .toggleStyle(LiquidGlassToggleStyle())
+                
+                Text("Render JavaScript-heavy sites for complete content extraction")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
+                
+                if config.enableJavaScriptRendering {
+                    Toggle("Auto-detect JS requirement", isOn: $config.autoDetectJSRequirement)
+                        .toggleStyle(LiquidGlassToggleStyle())
+                        .padding(.leading, 8)
+                    
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack {
+                            Text("JavaScript Timeout")
+                                .font(.subheadline)
+                            Spacer()
+                            Text("\(Int(config.jsRenderingTimeout))s")
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                        }
+                        Slider(value: $config.jsRenderingTimeout, in: 10...120, step: 5)
+                            .accentColor(.gray)
+                    }
+                    .padding(.leading, 8)
+                    
+                    Text("Increase timeout if JavaScript executions are failing and reverting to standard script processing")
+                        .font(.caption2)
+                        .foregroundColor(.orange)
+                        .padding(.leading, 8)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            }
+        }
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+                .shadow(color: .gray.opacity(0.5), radius: 8, x: 0, y: 4)
+        )
+        .scaleEffect(hoveredSection == "javascript" ? 1.02 : 1.0)
+        .animation(.easeInOut(duration: 0.8), value: hoveredSection)
+        .onHover { isHovered in
+            hoveredSection = isHovered ? "javascript" : nil
+        }
+    }
+    
+    private var aiEnhancementSection: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Image(systemName: "brain.head.profile")
+                    .foregroundColor(.purple)
+                    .font(.title2)
+                Text("AI Enhancement")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+            }
             
-            if config.enableDeepCrawling {
-                VStack(alignment: .leading, spacing: 8) {
-                    Text("Max Crawl Depth: \(config.maxCrawlDepth)")
-                        .font(.caption)
-                    Slider(value: Binding(
-                        get: { Double(config.maxCrawlDepth) },
-                        set: { config.maxCrawlDepth = Int($0) }
-                    ), in: 1...10, step: 1)
+            VStack(alignment: .leading, spacing: 10) {
+                HStack {
+                    Text("Apple Intelligence Status")
+                        .font(.body)
+                    
+                    Spacer()
+                    
+                    AIStatusIndicator()
                 }
                 
-                Toggle("Follow External Links", isOn: $config.followExternalLinks)
+                Text("AI features enhance document processing with intelligent analysis and smart link discovery")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+                    .fixedSize(horizontal: false, vertical: true)
                 
-                NavigationLink(destination: DeepCrawlView()) {
+                NavigationLink(destination: AISearchView()) {
                     HStack {
-                        Image(systemName: "globe")
-                        Text("View Deep Crawl Status")
+                        Image(systemName: "brain")
+                            .foregroundColor(.purple)
+                        Text("AI-Powered Search")
                         Spacer()
                         Image(systemName: "chevron.right")
                             .font(.caption)
                             .foregroundColor(.secondary)
                     }
+                    .padding(.vertical, 8)
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(.plain)
             }
         }
-        .padding()
-        .background(Color(.controlBackgroundColor))
-        .cornerRadius(8)
-    }
-    
-    private var javascriptRenderingSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("JavaScript Rendering")
-                .font(.headline)
-                .fontWeight(.semibold)
-            
-            Toggle("Enable JavaScript Rendering", isOn: $config.enableJavaScriptRendering)
-            
-            Text("Automatically render JavaScript-heavy documentation sites for complete content extraction")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            if config.enableJavaScriptRendering {
-                Toggle("Auto-detect JS requirement", isOn: $config.autoDetectJSRequirement)
-            }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+                .shadow(color: .black.opacity(0.1), radius: 8, x: 0, y: 4)
+        )
+        .scaleEffect(hoveredSection == "ai" ? 1.02 : 1.0)
+        .animation(.easeInOut(duration: 0.8), value: hoveredSection)
+        .onHover { isHovered in
+            hoveredSection = isHovered ? "ai" : nil
         }
-        .padding()
-        .background(Color(.controlBackgroundColor))
-        .cornerRadius(8)
-    }
-    
-    private var aiEnhancementSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("AI Enhancement")
-                .font(.headline)
-                .fontWeight(.semibold)
-            
-            HStack {
-                Text("Apple Intelligence Status")
-                    .font(.body)
-                
-                Spacer()
-                
-                AIStatusIndicator()
-            }
-            
-            Text("AI features enhance document processing with intelligent analysis, metadata generation, and smart link discovery")
-                .font(.caption)
-                .foregroundColor(.secondary)
-            
-            NavigationLink(destination: AISearchView()) {
-                HStack {
-                    Image(systemName: "brain")
-                    Text("AI-Powered Search")
-                    Spacer()
-                    Image(systemName: "chevron.right")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-            }
-            .buttonStyle(.bordered)
-        }
-        .padding()
-        .background(Color(.controlBackgroundColor))
-        .cornerRadius(8)
     }
     
     private var libraryManagementSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("Library Management")
-                .font(.headline)
-                .fontWeight(.semibold)
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Image(systemName: "books.vertical.fill")
+                    .foregroundColor(.orange)
+                    .font(.title2)
+                Text("Library Management")
+                    .font(.headline)
+                    .fontWeight(.semibold)
+            }
             
             HStack {
-                Text("Documents: \(library.documents.count)")
+                VStack(alignment: .leading) {
+                    Text("Documents")
+                        .font(.subheadline)
+                        .foregroundColor(.secondary)
+                    Text("\(library.documents.count)")
+                        .font(.title2)
+                        .fontWeight(.semibold)
+                }
+                
                 Spacer()
+                
                 Button("Refresh") {
                     library.refreshLibrary()
                 }
-                .buttonStyle(.bordered)
+                .buttonStyle(LiquidGlassButtonStyle())
             }
         }
-        .padding()
-        .background(Color(.controlBackgroundColor))
-        .cornerRadius(8)
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 16)
+                .fill(.ultraThinMaterial)
+                .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 4)
+        )
+        .scaleEffect(hoveredSection == "library" ? 1.02 : 1.0)
+        .animation(.easeInOut(duration: 0.8), value: hoveredSection)
+        .onHover { isHovered in
+            hoveredSection = isHovered ? "library" : nil
+        }
+    }
+}
+
+// MARK: - Custom Styles
+
+struct LiquidGlassToggleStyle: ToggleStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack {
+            configuration.label
+                .foregroundColor(.primary)
+            
+            Spacer()
+            
+            RoundedRectangle(cornerRadius: 16)
+                .fill(configuration.isOn ? Color.white : Color.gray.opacity(0.1))
+                .frame(width: 50, height: 30)
+                .overlay(
+                    Circle()
+                        .fill(.white)
+                        .frame(width: 26, height: 26)
+                        .offset(x: configuration.isOn ? 10 : -10)
+                        .animation(.easeInOut(duration: 0.8), value: configuration.isOn)
+                )
+                .onTapGesture {
+                    configuration.isOn.toggle()
+                }
+        }
+    }
+}
+
+struct LiquidGlassButtonStyle: ButtonStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        configuration.label
+            .foregroundColor(.white)
+            .padding(.horizontal, 14)
+            .padding(.vertical, 8)
+            .background(
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(.clear)
+                    .opacity(configuration.isPressed ? 0.7 : 1.0)
+            )
+            .scaleEffect(configuration.isPressed ? 0.95 : 1.0)
+            .animation(.easeInOut(duration: 0.3), value: configuration.isPressed)
     }
 }

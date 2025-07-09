@@ -6,9 +6,9 @@ struct ContentView: View {
     @ObservedObject private var library = DocLibraryIndex.shared
     
     var body: some View {
-        NavigationSplitView {
+        NavigationSplitView(columnVisibility: .constant(.all)) {
             EnhancedSidebarView(selection: $selectedSidebarItem)
-                .navigationSplitViewColumnWidth(min: 200, ideal: 250)
+                .navigationSplitViewColumnWidth(min: 160, ideal: 180, max: 200)
         } detail: {
             Group {
                 switch selectedSidebarItem {
@@ -22,20 +22,18 @@ struct ContentView: View {
                     LogViewerView()
                 case .status:
                     SystemStatusView()
-                case .deepCrawl:
-                    DeepCrawlView()
                 case .none:
                     EmptyStateView()
                 }
             }
-            .navigationSplitViewColumnWidth(min: 400, ideal: 600)
+            .navigationSplitViewColumnWidth(min: 400, ideal: 600, max: .infinity)
         }
         .toolbar {
             ToolbarItemGroup(placement: .primaryAction) {
                 if processor.isProcessing {
                     HStack {
                         ProgressView()
-                            .scaleEffect(0.8)
+                            .scaleEffect(0.2)
                         Text(processor.currentStatus)
                             .font(.caption)
                     }
@@ -50,7 +48,7 @@ struct ContentView: View {
                 .help("Refresh Library")
             }
         }
-        .frame(minWidth: 800, minHeight: 500)
+        .frame(minWidth: 600, minHeight: 400)
         .onAppear {
             // Perform startup cleanup
             DocumentStorage.shared.cleanupOrphanedFiles()
@@ -64,7 +62,6 @@ enum SidebarItem: String, CaseIterable, Hashable {
     case settings = "settings"
     case logs = "logs"
     case status = "status"
-    case deepCrawl = "deepCrawl"
     
     var displayName: String {
         switch self {
@@ -78,8 +75,6 @@ enum SidebarItem: String, CaseIterable, Hashable {
             return "Logs"
         case .status:
             return "System Status"
-        case .deepCrawl:
-            return "Deep Crawl"
         }
     }
     
@@ -95,8 +90,6 @@ enum SidebarItem: String, CaseIterable, Hashable {
             return "list.bullet.rectangle"
         case .status:
             return "info.circle"
-        case .deepCrawl:
-            return "globe"
         }
     }
 }
@@ -122,10 +115,10 @@ struct EnhancedSidebarView: View {
                     if item == .library {
                         Text("\(library.documents.count)")
                             .font(.caption)
-                            .foregroundColor(selection == item ? .white.opacity(0.8) : .secondary)
+                            .foregroundColor(selection == item ? .white.opacity(0.4) : .secondary)
                             .padding(.horizontal, 6)
                             .padding(.vertical, 2)
-                            .background(selection == item ? Color.white.opacity(0.2) : Color.blue.opacity(0.1))
+                            .background(selection == item ? Color.clear.opacity(0.2) : Color.blue.opacity(0.1))
                             .cornerRadius(8)
                     } else if item == .importItem && !processor.processingQueue.isEmpty {
                         Text("\(processor.processingQueue.count)")
@@ -154,7 +147,7 @@ struct EmptyStateView: View {
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "doc.text.magnifyingglass")
-                .font(.system(size: 64))
+                .font(.system(size: 54))
                 .foregroundColor(.secondary)
             
             Text("Welcome to DocShop")

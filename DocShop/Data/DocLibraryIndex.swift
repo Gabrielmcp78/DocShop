@@ -33,7 +33,11 @@ class DocLibraryIndex: ObservableObject {
         // Check for duplicates
         if let existingIndex = documents.firstIndex(where: { $0.sourceURL == document.sourceURL }) {
             DispatchQueue.main.async {
-                self.documents[existingIndex] = document
+                if existingIndex < self.documents.count {
+                    self.documents[existingIndex] = document
+                } else {
+                    self.documents.append(document)
+                }
             }
             logger.info("Updated existing document: \(document.title)")
         } else {

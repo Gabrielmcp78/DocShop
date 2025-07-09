@@ -35,7 +35,7 @@ struct MarkdownViewerView: View {
                     if content.isEmpty {
                         VStack(spacing: 16) {
                             Image(systemName: "doc.text")
-                                .font(.system(size: 48))
+                                .font(.system(size: 38))
                                 .foregroundColor(.secondary)
                             
                             Text("Document is empty")

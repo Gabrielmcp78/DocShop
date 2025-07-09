@@ -21,7 +21,7 @@ struct DocumentDropView: View {
     @ObservedObject private var jsRenderer = JavaScriptRenderer.shared
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 16) {
+        VStack(alignment: .leading, spacing: 12) {
             HStack {
                 Text("📎 Import Documents")
                     .font(.headline)
@@ -146,7 +146,9 @@ struct DocumentDropView: View {
                 }
             }
         }
-        .padding()
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .alert("Import Error", isPresented: $showingError) {
             Button("OK") { }
         } message: {

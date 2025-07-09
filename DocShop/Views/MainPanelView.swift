@@ -16,8 +16,6 @@ struct MainPanelView: View {
             LogViewerView()
         case .status:
             SystemStatusView()
-        case .deepCrawl:
-            DeepCrawlView()
         case nil:
             Text("Select a tool to begin.")
                 .font(.title2)
@@ -28,7 +26,6 @@ struct MainPanelView: View {
     var body: some View {
         mainContent
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color(.controlBackgroundColor))
+            .background(.ultraThinMaterial)
     }
 }
-

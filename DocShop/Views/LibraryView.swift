@@ -8,6 +8,7 @@ struct LibraryView: View {
     @State private var sortOption: SortOption = .dateImported
     @State private var showFavoritesOnly = false
     @State private var showingTagEditor = false
+    @State private var showingDocumentDetail = false
     
     var filteredDocuments: [DocumentMetaData] {
         var documents = library.documents
@@ -56,6 +57,59 @@ struct LibraryView: View {
     }
     
     var body: some View {
+#if DEBUG
+        VStack(spacing: 0) {
+            HStack {
+                Text("[DEBUG] Docs in library: \(library.documents.count)")
+                Spacer()
+                if let doc = selectedDocument {
+                    Text("Selected: \(doc.title) | id: \(doc.id) | path: \(doc.filePath)")
+                } else {
+                    Text("Selected: none")
+                }
+            }
+            .padding(6)
+            .background(Color.yellow.opacity(0.85))
+            .font(.caption)
+            .zIndex(100)
+            
+            Divider()
+            
+            mainContent
+        }
+#else
+        mainContent
+#endif
+    }
+    
+    private var mainContent: some View {
+        HStack(spacing: 0) {
+            // Document List Side - takes full width when no selection
+            documentListView
+                .frame(maxWidth: selectedDocument == nil ? .infinity : 400)
+                .background(.ultraThinMaterial)
+            
+            // Document Detail Side - only show when document selected
+            if let selectedDocument = selectedDocument {
+                Divider()
+                
+                DocumentDetailView(document: selectedDocument)
+                    .transition(.asymmetric(
+                        insertion: .move(edge: .trailing).combined(with: .opacity),
+                        removal: .move(edge: .trailing).combined(with: .opacity)
+                    ))
+                    .animation(.easeInOut(duration: 0.8), value: selectedDocument.id)
+                    .frame(minWidth: 400, maxWidth: .infinity)
+            }
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .animation(.easeInOut(duration: 0.8), value: selectedDocument != nil)
+        .sheet(isPresented: $showingTagEditor) {
+            TagEditorView()
+        }
+    }
+    
+    private var documentListView: some View {
         VStack(alignment: .leading, spacing: 0) {
             // Header
             HStack {
@@ -153,14 +207,17 @@ struct LibraryView: View {
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
             } else {
-                List(filteredDocuments, selection: $selectedDocument) { document in
+                List(filteredDocuments, id: \.id, selection: $selectedDocument) { document in
                     EnhancedDocumentRowView(document: document) {
-                        selectedDocument = document
+                        withAnimation(.easeInOut(duration: 0.8)) {
+                            selectedDocument = document
+                        }
                         // Record access
                         var updatedDoc = document
                         updatedDoc.recordAccess()
                         library.updateDocument(updatedDoc)
                     }
+                    .tag(document)
                 }
                 .listStyle(.plain)
             }
@@ -178,12 +235,6 @@ struct LibraryView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .sheet(item: $selectedDocument) { document in
-            DocumentDetailView(document: document)
-        }
-        .sheet(isPresented: $showingTagEditor) {
-            TagEditorView()
-        }
     }
 }
 

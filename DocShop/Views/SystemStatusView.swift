@@ -70,7 +70,7 @@ struct SystemStatusView: View {
         } else if memory.memoryPressure == .warning || processor.isProcessing {
             return .orange
         } else {
-            return .green
+            return .gray
         }
     }
     
@@ -135,7 +135,7 @@ struct SystemStatusView: View {
             }
         }
         .padding()
-        .background(Color(.controlBackgroundColor))
+        .background(.ultraThinMaterial)
         .cornerRadius(8)
     }
     
@@ -149,7 +149,7 @@ struct SystemStatusView: View {
                 StatusRow(
                     title: "Status",
                     value: processor.isProcessing ? "Processing" : "Idle",
-                    color: processor.isProcessing ? .orange : .green
+                    color: processor.isProcessing ? .orange : .gray
                 )
                 
                 if processor.isProcessing {
@@ -175,7 +175,7 @@ struct SystemStatusView: View {
                 StatusRow(
                     title: "Queue Length",
                     value: "\(processor.processingQueue.count)",
-                    color: processor.processingQueue.isEmpty ? .green : .orange
+                    color: processor.processingQueue.isEmpty ? .gray : .orange
                 )
                 
                 if let lastError = processor.lastError {
@@ -198,7 +198,7 @@ struct SystemStatusView: View {
             }
         }
         .padding()
-        .background(Color(.controlBackgroundColor))
+        .background(.ultraThinMaterial)
         .cornerRadius(8)
     }
     
@@ -224,7 +224,7 @@ struct SystemStatusView: View {
                 StatusRow(
                     title: "Library Status",
                     value: library.isLoading ? "Loading" : "Ready",
-                    color: library.isLoading ? .orange : .green
+                    color: library.isLoading ? .orange : .gray
                 )
                 
                 if let lastError = library.lastError {
@@ -247,7 +247,7 @@ struct SystemStatusView: View {
             }
         }
         .padding()
-        .background(Color(.controlBackgroundColor))
+        .background(.ultraThinMaterial)
         .cornerRadius(8)
     }
     
@@ -279,18 +279,18 @@ struct SystemStatusView: View {
                 StatusRow(
                     title: "Blocked Domains",
                     value: "\(config.blockedDomains.count)",
-                    color: config.blockedDomains.isEmpty ? .green : .orange
+                    color: config.blockedDomains.isEmpty ? .gray : .orange
                 )
                 
                 StatusRow(
                     title: "Logging",
                     value: config.enableLogging ? "Enabled" : "Disabled",
-                    color: config.enableLogging ? .green : .gray
+                    color: config.enableLogging ? .gray : .gray
                 )
             }
         }
         .padding()
-        .background(Color(.controlBackgroundColor))
+        .background(.ultraThinMaterial)
         .cornerRadius(8)
     }
     
@@ -341,7 +341,7 @@ struct MemoryUsageRow: View {
         } else if percentage > 0.6 {
             return .orange
         } else {
-            return .green
+            return .gray
         }
     }
 }

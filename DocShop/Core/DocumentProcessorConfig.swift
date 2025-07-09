@@ -27,7 +27,7 @@ class DocumentProcessorConfig: ObservableObject {
     
     // JavaScript rendering settings
     @Published var enableJavaScriptRendering: Bool = true
-    @Published var jsRenderingTimeout: TimeInterval = 30.0
+    @Published var jsRenderingTimeout: TimeInterval = 60.0
     @Published var autoDetectJSRequirement: Bool = true
     
     private let configFileURL: URL
@@ -121,9 +121,9 @@ class DocumentProcessorConfig: ObservableObject {
         blockedDomains = []
         enableLogging = true
         maxLogFileSize = 10 * 1024 * 1024
-        enableDeepCrawling = false
-        maxCrawlDepth = 3
-        maxPagesPerDomain = 50
+        enableDeepCrawling = true
+        maxCrawlDepth = 10
+        maxPagesPerDomain = 150
         crawlDelay = 1.0
         followExternalLinks = false
         enableJavaScriptRendering = true

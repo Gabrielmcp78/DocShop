@@ -6,25 +6,75 @@ struct DocumentDetailView: View {
     @State private var content: String = ""
     @State private var isLoading = true
     @State private var error: String?
+    @Environment(\.presentationMode) var presentationMode
     
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            // Header
-            VStack(alignment: .leading, spacing: 8) {
+            // Navigation Header
+            HStack {
+                Button(action: {
+                    presentationMode.wrappedValue.dismiss()
+                }) {
+                    Image(systemName: "chevron.left")
+                        .font(.title2)
+                        .foregroundColor(.blue)
+                }
+                .buttonStyle(.plain)
+                
+                Spacer()
+                
+                Menu {
+                    Button("Open in Browser") {
+                        if let url = URL(string: document.sourceURL) {
+                            NSWorkspace.shared.open(url)
+                        }
+                    }
+                    Button("Copy Link") {
+                        NSPasteboard.general.clearContents()
+                        NSPasteboard.general.setString(document.sourceURL, forType: .string)
+                    }
+                    Button("Export Content") {
+                        saveToFile()
+                    }
+                } label: {
+                    Image(systemName: "ellipsis.circle")
+                        .font(.title2)
+                        .foregroundColor(.blue)
+                }
+                .buttonStyle(.plain)
+            }
+            .padding()
+            .background(.ultraThinMaterial)
+            
+            // Document Header
+            VStack(alignment: .leading, spacing: 12) {
                 Text(document.displayTitle)
                     .font(.title)
                     .fontWeight(.bold)
                 
+                Button(action: {
+                    if let url = URL(string: document.sourceURL) {
+                        NSWorkspace.shared.open(url)
+                    }
+                }) {
+                    HStack {
+                        Image(systemName: "link")
+                            .foregroundColor(.clear
+                            )
+                        Text(document.sourceURL)
+                            .font(.caption)
+                            .foregroundColor(.clear)
+                            .underline()
+                    }
+                }
+                .buttonStyle(.plain)
+                
                 HStack {
-                    Label(document.sourceURL, systemImage: "link")
+                    Text(document.formattedDate)
                         .font(.caption)
                         .foregroundColor(.secondary)
                     
                     Spacer()
-                    
-                    Text(document.formattedDate)
-                        .font(.caption)
-                        .foregroundColor(.secondary)
                     
                     Text(document.formattedFileSize)
                         .font(.caption)
@@ -32,7 +82,7 @@ struct DocumentDetailView: View {
                 }
             }
             .padding()
-            .background(Color(.controlBackgroundColor))
+            .background(.ultraThinMaterial)
             
             Divider()
             
@@ -68,11 +118,8 @@ struct DocumentDetailView: View {
             } else {
                 ScrollView {
                     VStack(alignment: .leading, spacing: 16) {
-                        // Raw markdown content - fully selectable and copyable
-                        Text(content)
-                            .font(.system(.body, design: .monospaced))
-                            .textSelection(.enabled)
-                            .frame(maxWidth: .infinity, alignment: .leading)
+                        // Enhanced markdown content with clickable links
+                        MarkdownContentView(content: content, searchText: "")
                             .padding()
                     }
                 }
@@ -151,6 +198,7 @@ struct DocumentDetailView: View {
         }
     }
 }
+
 
 #Preview {
     DocumentDetailView(
