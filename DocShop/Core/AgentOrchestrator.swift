@@ -6,7 +6,7 @@ class AgentOrchestrator: ObservableObject {
     static let shared = AgentOrchestrator()
     
     @Published var activeAgents: [DevelopmentAgent] = []
-    @Published var projectQueue: [ProjectTask] = []
+    @Published var projectQueue: [Project] = []
     @Published var systemStatus: OrchestrationStatus = .idle
     
     private let taskDistributor = TaskDistributor()
@@ -17,54 +17,35 @@ class AgentOrchestrator: ObservableObject {
     private init() {}
     
     func createProject(from documents: [DocumentMetaData], requirements: ProjectRequirements) async -> Project {
-        let project = Project(
-            id: UUID(),
+        var project = Project(
             name: requirements.projectName,
             description: requirements.projectDescription,
             requirements: requirements,
-            documents: documents,
-            agents: [],
-            tasks: [],
-            benchmarks: [],
-            status: .initialized,
-            createdAt: Date(),
-            estimatedCompletion: nil
+            documents: documents
         )
         // Register and assign agents
         let agents = AgentRegistry.shared.matchAgents(for: requirements)
-        var projectWithAgents = project
-        projectWithAgents.agents = agents
+        project.agents = agents.map { $0.id }
         // Generate initial tasks
-        let tasks = ProjectTask.generateInitialTasks(for: projectWithAgents)
-        projectWithAgents.tasks = tasks
+        let tasks = ProjectTask.generateInitialTasks(for: project)
+        project.tasks = tasks
         // Assign tasks to agents
         TaskDistributor().distribute(tasks: tasks, to: agents)
         // Add to queue
-        projectQueue.append(projectWithAgents)
-        return projectWithAgents
+        projectQueue.append(project)
+        return project
     }
     
-    func assignTaskToAgent(_ task: ProjectTask, agent: DevelopmentAgent) async {
-        // TODO: Assign development tasks to agents, inject context, start progress monitoring
-        fatalError("Not implemented")
-    }
-    
-    func monitorAgentProgress() async {
-        // TODO: Real-time progress tracking, context reinjection, benchmark validation
-        fatalError("Not implemented")
-    }
-
     func assign(task: ProjectTask, to agent: DevelopmentAgent) {
-        // Find the project and update the task's assigned agent
         for (projectIndex, var project) in projectQueue.enumerated() {
             if let taskIndex = project.tasks.firstIndex(where: { $0.id == task.id }) {
-                project.tasks[taskIndex].assignedAgent = agent
+                project.tasks[taskIndex].assignedAgentID = agent.id
                 projectQueue[projectIndex] = project
                 break
             }
         }
     }
-
+    
     func updateStatus(for task: ProjectTask, to status: ProjectTaskStatus) {
         for (projectIndex, var project) in projectQueue.enumerated() {
             if let taskIndex = project.tasks.firstIndex(where: { $0.id == task.id }) {
@@ -74,9 +55,11 @@ class AgentOrchestrator: ObservableObject {
             }
         }
     }
+    
+    func agent(for id: UUID) -> DevelopmentAgent? {
+        return AgentRegistry.shared.allAgents().first(where: { $0.id == id })
+    }
 }
-
-// MARK: - Supporting Types
 
 enum OrchestrationStatus: String, Codable {
     case idle, running, paused, error

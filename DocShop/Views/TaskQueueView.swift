@@ -21,19 +21,21 @@ struct TaskQueueView: View {
                             .font(.caption2)
                             .foregroundColor(.secondary)
                     }
+                    Divider()
                 }
             }
         }
+        .padding(.vertical, 8)
     }
     
-    private func color(for status: TaskStatus) -> Color {
+    private func color(for status: ProjectTaskStatus) -> Color {
         switch status {
         case .pending: return .gray
-        case .assigned: return .orange
-        case .inProgress: return .blue
+        case .assigned: return .blue
+        case .inProgress: return .orange
         case .completed: return .green
         case .blocked: return .red
-        case .error: return .red
+        case .error: return .pink
         }
     }
 }

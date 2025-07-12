@@ -10,7 +10,6 @@ struct ProjectDetailView: View {
 
 #Preview {
     ProjectDetailView(project: Project(
-        id: UUID(),
         name: "Sample Project",
         description: "A demo project for preview.",
         requirements: ProjectRequirements(
@@ -18,14 +17,10 @@ struct ProjectDetailView: View {
             sdkFeatures: [.authentication],
             documentationRequirements: [.apiReference],
             testingRequirements: [.unit],
-            performanceBenchmarks: [.latency]
+            performanceBenchmarks: [.latency],
+            projectName: "Sample Project",
+            projectDescription: "A demo project for preview."
         ),
-        documents: [],
-        agents: [],
-        tasks: [],
-        benchmarks: [],
-        status: .inProgress,
-        createdAt: Date(),
-        estimatedCompletion: nil
+        documents: []
     ))
 } 

@@ -8,8 +8,8 @@ func registerExampleLocalAgent() {
         relevantDocs: [],
         requirements: ProjectRequirements(
             targetLanguages: [.swift],
-            sdkFeatures: [.apiClient],
-            documentationRequirements: [.apiDocs],
+            sdkFeatures: [.authentication],
+            documentationRequirements: [.apiReference],
             testingRequirements: [.unit],
             performanceBenchmarks: []
         )
@@ -32,8 +32,8 @@ func registerExampleRemoteAgent() {
         relevantDocs: [],
         requirements: ProjectRequirements(
             targetLanguages: [.python],
-            sdkFeatures: [.apiClient],
-            documentationRequirements: [.apiDocs],
+            sdkFeatures: [.authentication],
+            documentationRequirements: [.apiReference],
             testingRequirements: [.integration],
             performanceBenchmarks: []
         )

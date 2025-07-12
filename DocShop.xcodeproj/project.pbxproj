@@ -7,11 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		434FB8EB2E22D75900AA4B57 /* FoundationModels.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 434FB8EA2E22D75900AA4B57 /* FoundationModels.framework */; };
+		434FB8ED2E22D7A300AA4B57 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 434FB8EC2E22D7A300AA4B57 /* SwiftUI.framework */; };
 		437444E52E107EEB0063FED6 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 437444E42E107EEB0063FED6 /* SwiftSoup */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		4345A80F2E0FF5FA002D6A3F /* DocShop.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DocShop.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		434FB8EA2E22D75900AA4B57 /* FoundationModels.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = FoundationModels.framework; path = System/Library/Frameworks/FoundationModels.framework; sourceTree = SDKROOT; };
+		434FB8EC2E22D7A300AA4B57 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -42,6 +46,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				437444E52E107EEB0063FED6 /* SwiftSoup in Frameworks */,
+				434FB8ED2E22D7A300AA4B57 /* SwiftUI.framework in Frameworks */,
+				434FB8EB2E22D75900AA4B57 /* FoundationModels.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -53,6 +59,7 @@
 			children = (
 				4345A8102E0FF5FA002D6A3F /* Products */,
 				4345A8112E0FF5FA002D6A3F /* DocShop */,
+				434FB8E92E22D75900AA4B57 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -62,6 +69,15 @@
 				4345A80F2E0FF5FA002D6A3F /* DocShop.app */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		434FB8E92E22D75900AA4B57 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				434FB8EC2E22D7A300AA4B57 /* SwiftUI.framework */,
+				434FB8EA2E22D75900AA4B57 /* FoundationModels.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -281,12 +297,13 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DocShop/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "-.DocShop";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -315,12 +332,13 @@
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = DocShop/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.developer-tools";
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "-.DocShop";
 				PRODUCT_NAME = "$(TARGET_NAME)";

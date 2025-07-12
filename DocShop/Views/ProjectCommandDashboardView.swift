@@ -41,10 +41,13 @@ struct ProjectCommandDashboardView: View {
             }
             Divider()
             if showAgents {
-                AgentPanelView(agents: project.agents)
+                AgentPanelView(agents: project.agents as! [DevelopmentAgent])
             }
             if showTasks {
-                TaskAssignmentPanelView(tasks: project.tasks, agents: project.agents)
+                TaskAssignmentPanelView(
+                    tasks: project.tasks,
+                    agents: project.agents as! [DevelopmentAgent]
+                )
             }
             Spacer()
         }

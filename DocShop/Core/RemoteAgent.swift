@@ -1,4 +1,5 @@
 import Foundation
+// Import AgentSpecialization, AgentCapability, AgentContext, TaskResult from Models
 
 class RemoteAgent: DevelopmentAgent {
     let endpoint: URL

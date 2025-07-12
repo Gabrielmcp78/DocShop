@@ -1,4 +1,6 @@
 import Foundation
+import Combine
+// Import context types from Models
 
 class ContextManager: ObservableObject {
     private var projectContexts: [UUID: ProjectContext] = [:]
@@ -18,23 +20,4 @@ class ContextManager: ObservableObject {
         // TODO: Check if agent is following context, detect drift
         fatalError("Not implemented")
     }
-}
-
-// MARK: - Supporting Types
-
-struct ProjectContext {
-    let projectID: UUID
-    let keyInfo: [String]
-    let requirements: ProjectRequirements
-}
-
-struct AgentContext {
-    let agentID: UUID
-    let currentTask: ProjectTask?
-    let relevantDocs: [DocumentMetaData]
-    let requirements: ProjectRequirements
-}
-
-enum ContextAlignment: String, Codable {
-    case aligned, drifting, lost
 } 

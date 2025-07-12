@@ -1,4 +1,5 @@
 import Foundation
+// Import TaskResult from Models
 
 class LocalAgent: DevelopmentAgent {
     let platform: String = "local"

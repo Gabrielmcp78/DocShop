@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+// Import AgentContext from Models
 
 @MainActor
 class DevelopmentAgent: ObservableObject, Identifiable {
@@ -25,42 +26,14 @@ class DevelopmentAgent: ObservableObject, Identifiable {
         self.context = context
     }
     
-    func assignTask(_ task: ProjectTask, context: AgentContext) async {
-        // TODO: Receive task assignment, load context, begin execution
-        fatalError("Not implemented")
-    }
-    
-    func executeTask() async -> TaskResult {
-        // TODO: AI-powered task execution, code generation, validation, reporting
-        fatalError("Not implemented")
-    }
-    
-    func receiveContextUpdate(_ context: AgentContext) async {
-        // TODO: Handle context reinjection, adjust work, ensure alignment
-        fatalError("Not implemented")
+    func perform(task: ProjectTask, completion: @escaping (TaskResult) -> Void) {
+        // TODO: Implement agent task execution logic
+        completion(TaskResult(success: true, output: "Stub", error: nil))
     }
 }
 
 // MARK: - Supporting Types
 
-enum AgentSpecialization: String, Codable, CaseIterable {
-    case backend, frontend, ai, sdk, documentation, testing, devops
-}
-
-enum AgentCapability: String, Codable, CaseIterable {
-    case codeGeneration, analysis, testing, documentation, integration, monitoring
-}
-
-enum AgentStatus: String, Codable {
-    case idle, assigned, working, blocked, completed, error
-}
-
 class AIEngine {}
 class CodeGenerator {}
 class CodeValidator {}
-
-struct TaskResult {
-    let success: Bool
-    let output: String
-    let error: String?
-} 

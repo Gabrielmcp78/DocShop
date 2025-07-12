@@ -22,7 +22,7 @@ struct TaskAssignmentPanelView: View {
                             Text(task.status.rawValue.capitalized)
                                 .font(.caption)
                                 .foregroundColor(.secondary)
-                            if let agent = task.assignedAgent {
+                            if let agentID = task.assignedAgentID, let agent = orchestrator.agent(for: agentID) {
                                 Text("Assigned to: \(agent.name)")
                                     .font(.caption2)
                                     .foregroundColor(.blue)

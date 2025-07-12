@@ -1,5 +1,6 @@
 import Foundation
 
+// Only define these types here, not in Core
 struct ProjectContext: Codable {
     let projectID: UUID
     let keyInfo: [String]

@@ -20,6 +20,8 @@ struct MainPanelView: View {
             Text("Select a tool to begin.")
                 .font(.title2)
                 .foregroundStyle(.secondary)
+        case .some(.projects):
+            ProjectOrchestrationView()
         }
     }
 

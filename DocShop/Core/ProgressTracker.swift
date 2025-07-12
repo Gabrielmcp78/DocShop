@@ -16,30 +16,23 @@ class ProgressTracker: ObservableObject {
         fatalError("Not implemented")
     }
     
-    func detectAgentDrift(_ agent: DevelopmentAgent) async -> Bool {
-        // TODO: Monitor agent focus, context alignment, off-task behavior
+    func detectAgentDrift(_ agent: DevelopmentAgent) async -> DriftDetectionResult {
+        // TODO: Detect agent drift
         fatalError("Not implemented")
     }
 }
 
-// MARK: - Supporting Types
-
-struct ProjectProgress {
+struct ProjectProgress: Codable {
     let completedTasks: Int
     let totalTasks: Int
-    let percentComplete: Double
-    let estimatedCompletion: Date?
 }
 
-struct AgentProgress {
-    let agentID: UUID
-    let currentTask: ProjectTask?
-    let percentComplete: Double
-    let lastUpdate: Date
+struct AgentProgress: Codable {
+    let completedTasks: Int
+    let totalTasks: Int
 }
 
-struct BenchmarkResult {
-    let taskID: UUID
-    let passed: Bool
+struct DriftDetectionResult: Codable {
+    let isDrifting: Bool
     let details: String
 } 
