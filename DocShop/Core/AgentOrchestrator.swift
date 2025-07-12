@@ -17,8 +17,31 @@ class AgentOrchestrator: ObservableObject {
     private init() {}
     
     func createProject(from documents: [DocumentMetaData], requirements: ProjectRequirements) async -> Project {
-        // TODO: Analyze documents, generate project structure, create agent assignments, initialize progress tracking
-        fatalError("Not implemented")
+        let project = Project(
+            id: UUID(),
+            name: requirements.projectName,
+            description: requirements.projectDescription,
+            requirements: requirements,
+            documents: documents,
+            agents: [],
+            tasks: [],
+            benchmarks: [],
+            status: .initialized,
+            createdAt: Date(),
+            estimatedCompletion: nil
+        )
+        // Register and assign agents
+        let agents = AgentRegistry.shared.matchAgents(for: requirements)
+        var projectWithAgents = project
+        projectWithAgents.agents = agents
+        // Generate initial tasks
+        let tasks = ProjectTask.generateInitialTasks(for: projectWithAgents)
+        projectWithAgents.tasks = tasks
+        // Assign tasks to agents
+        TaskDistributor().distribute(tasks: tasks, to: agents)
+        // Add to queue
+        projectQueue.append(projectWithAgents)
+        return projectWithAgents
     }
     
     func assignTaskToAgent(_ task: ProjectTask, agent: DevelopmentAgent) async {
@@ -29,6 +52,27 @@ class AgentOrchestrator: ObservableObject {
     func monitorAgentProgress() async {
         // TODO: Real-time progress tracking, context reinjection, benchmark validation
         fatalError("Not implemented")
+    }
+
+    func assign(task: ProjectTask, to agent: DevelopmentAgent) {
+        // Find the project and update the task's assigned agent
+        for (projectIndex, var project) in projectQueue.enumerated() {
+            if let taskIndex = project.tasks.firstIndex(where: { $0.id == task.id }) {
+                project.tasks[taskIndex].assignedAgent = agent
+                projectQueue[projectIndex] = project
+                break
+            }
+        }
+    }
+
+    func updateStatus(for task: ProjectTask, to status: ProjectTaskStatus) {
+        for (projectIndex, var project) in projectQueue.enumerated() {
+            if let taskIndex = project.tasks.firstIndex(where: { $0.id == task.id }) {
+                project.tasks[taskIndex].status = status
+                projectQueue[projectIndex] = project
+                break
+            }
+        }
     }
 }
 
