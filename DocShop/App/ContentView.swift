@@ -22,6 +22,8 @@ struct ContentView: View {
                     LogViewerView()
                 case .status:
                     SystemStatusView()
+                case .projects:
+                    ProjectOrchestrationView()
                 case .none:
                     EmptyStateView()
                 }
@@ -62,6 +64,7 @@ enum SidebarItem: String, CaseIterable, Hashable {
     case settings = "settings"
     case logs = "logs"
     case status = "status"
+    case projects = "projects"
     
     var displayName: String {
         switch self {
@@ -75,6 +78,8 @@ enum SidebarItem: String, CaseIterable, Hashable {
             return "Logs"
         case .status:
             return "System Status"
+        case .projects:
+            return "Projects"
         }
     }
     
@@ -90,6 +95,8 @@ enum SidebarItem: String, CaseIterable, Hashable {
             return "list.bullet.rectangle"
         case .status:
             return "info.circle"
+        case .projects:
+            return "folder.badge.gearshape"
         }
     }
 }
