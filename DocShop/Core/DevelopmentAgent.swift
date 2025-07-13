@@ -27,13 +27,60 @@ class DevelopmentAgent: ObservableObject, Identifiable {
     }
     
     func perform(task: ProjectTask, completion: @escaping (TaskResult) -> Void) {
-        // TODO: Implement agent task execution logic
-        completion(TaskResult(success: true, output: "Stub", error: nil))
+        Task {
+            self.currentTask = task
+            self.status = .inProgress
+            self.progress = 0.0
+            do {
+                // Simulate progress
+                for i in 1...10 {
+                    try await Task.sleep(nanoseconds: 200_000_000) // 0.2s
+                    self.progress = Double(i) / 10.0
+                }
+                // Route to specialized engines based on task type
+                let output: String
+                switch task.context.info.lowercased() {
+                case let info where info.contains("ai"):
+                    output = try await aiEngine.run(task: task)
+                case let info where info.contains("code"):
+                    output = try await codeGenerator.generate(task: task)
+                case let info where info.contains("validate"):
+                    output = try await validator.validate(task: task)
+                default:
+                    output = "Task completed: \(task.title)"
+                }
+                self.status = .completed
+                self.progress = 1.0
+                completion(TaskResult(success: true, output: output, error: nil))
+            } catch {
+                self.status = .error
+                completion(TaskResult(success: false, output: nil, error: error.localizedDescription))
+            }
+            self.currentTask = nil
+        }
     }
 }
 
 // MARK: - Supporting Types
 
-class AIEngine {}
-class CodeGenerator {}
-class CodeValidator {}
+class AIEngine {
+    func run(task: ProjectTask) async throws -> String {
+        // Simulate AI analysis or generation
+        try await Task.sleep(nanoseconds: 300_000_000)
+        return "AIEngine completed: \(task.title)"
+    }
+}
+class CodeGenerator {
+    func generate(task: ProjectTask) async throws -> String {
+        // Simulate code generation
+        try await Task.sleep(nanoseconds: 300_000_000)
+        return "CodeGenerator completed: \(task.title)"
+    }
+}
+class CodeValidator {
+    func validate(task: ProjectTask) async throws -> String {
+        // Simulate code validation
+        try await Task.sleep(nanoseconds: 300_000_000)
+        return "CodeValidator completed: \(task.title)"
+    }
+}

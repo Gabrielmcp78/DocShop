@@ -6,14 +6,26 @@ protocol AgentExecutor {
 
 class LocalAgentExecutor: AgentExecutor {
     func execute(task: ProjectTask, for agent: DevelopmentAgent, completion: @escaping (TaskResult) -> Void) {
-        // TODO: Implement local execution logic
-        completion(TaskResult(success: true, output: "Local execution stub", error: nil))
+        // Execute the task locally using the agent's perform method
+        agent.perform(task: task, completion: completion)
     }
 }
 
 class RemoteAgentExecutor: AgentExecutor {
     func execute(task: ProjectTask, for agent: DevelopmentAgent, completion: @escaping (TaskResult) -> Void) {
-        // TODO: Implement remote (REST/gRPC) execution logic
-        completion(TaskResult(success: true, output: "Remote execution stub", error: nil))
+        // Simulate a remote REST/gRPC call (replace with real remote logic as needed)
+        Task {
+            do {
+                // Simulate network delay
+                try await Task.sleep(nanoseconds: 500_000_000) // 0.5s
+                // Simulate remote execution by calling agent.perform (in real use, this would be a network call)
+                agent.perform(task: task) { result in
+                    // In real remote, handle network errors, serialization, etc.
+                    completion(TaskResult(success: result.success, output: "[Remote] " + (result.output ?? ""), error: result.error))
+                }
+            } catch {
+                completion(TaskResult(success: false, output: nil, error: "Remote execution failed: \(error.localizedDescription)"))
+            }
+        }
     }
 } 
