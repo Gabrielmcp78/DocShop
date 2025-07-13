@@ -24,6 +24,7 @@ struct SystemStatusView: View {
             }
             .padding()
         }
+        .glassy()
         .navigationTitle("System Status")
         .onAppear {
             startRefreshTimer()

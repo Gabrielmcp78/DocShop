@@ -28,6 +28,6 @@ struct MainPanelView: View {
     var body: some View {
         mainContent
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(.ultraThinMaterial)
+            .glassy()
     }
 }

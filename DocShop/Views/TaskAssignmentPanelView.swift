@@ -52,6 +52,7 @@ struct TaskAssignmentPanelView: View {
                 }
             }
         }
+        .glassy()
         .padding(.vertical, 8)
     }
 } 

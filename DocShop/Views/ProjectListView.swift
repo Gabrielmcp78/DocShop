@@ -25,6 +25,7 @@ struct ProjectListView: View {
                 .tag(project as Project?)
             }
         }
+        .glassy()
         .navigationTitle("Projects")
     }
 }

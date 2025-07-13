@@ -51,6 +51,7 @@ struct ProjectCommandDashboardView: View {
             }
             Spacer()
         }
+        .glassy()
         .padding()
     }
 } 

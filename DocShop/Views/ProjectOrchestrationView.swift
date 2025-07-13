@@ -26,6 +26,7 @@ struct ProjectOrchestrationView: View {
                     .foregroundColor(.secondary)
             }
         }
+        .glassy()
     }
 }
 

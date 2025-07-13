@@ -22,6 +22,9 @@ struct DeepCrawlView: View {
             }
         }
         .padding()
+        .background(.ultraThinMaterial)
+        .background(Color.white.opacity(0.18))
+        .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))
         .navigationTitle("Deep Crawl")
         .toolbar {
             ToolbarItem(placement: .primaryAction) {

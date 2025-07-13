@@ -22,6 +22,7 @@ struct AISearchView: View {
             }
         }
         .padding()
+        .glassy()
         .navigationTitle("AI-Powered Search")
     }
     

@@ -50,6 +50,7 @@ struct AgentPanelView: View {
             }
         }
         .padding(.vertical, 8)
+        .glassy()
         .sheet(isPresented: $showAssignTaskSheet) {
             // TODO: Implement task picker and assignment logic
             Text("Assign a task to \(selectedAgent?.name ?? "") (Task picker UI goes here)")

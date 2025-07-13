@@ -57,29 +57,7 @@ struct LibraryView: View {
     }
     
     var body: some View {
-#if DEBUG
-        VStack(spacing: 0) {
-            HStack {
-                Text("[DEBUG] Docs in library: \(library.documents.count)")
-                Spacer()
-                if let doc = selectedDocument {
-                    Text("Selected: \(doc.title) | id: \(doc.id) | path: \(doc.filePath)")
-                } else {
-                    Text("Selected: none")
-                }
-            }
-            .padding(6)
-            .background(Color.yellow.opacity(0.85))
-            .font(.caption)
-            .zIndex(100)
-            
-            Divider()
-            
-            mainContent
-        }
-#else
-        mainContent
-#endif
+        mainContent.glassy()
     }
     
     private var mainContent: some View {

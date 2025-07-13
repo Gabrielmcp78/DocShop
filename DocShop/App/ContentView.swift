@@ -24,6 +24,14 @@ struct ContentView: View {
                     SystemStatusView()
                 case .projects:
                     ProjectOrchestrationView()
+                case .aiSearch:
+                    AISearchView()
+                case .deepCrawl:
+                    DeepCrawlView()
+                case .knowledgeGraph:
+                    KnowledgeGraphView()
+                case .systemValidation:
+                    SystemValidationView()
                 case .none:
                     EmptyStateView()
                 }
@@ -65,6 +73,10 @@ enum SidebarItem: String, CaseIterable, Hashable {
     case logs = "logs"
     case status = "status"
     case projects = "projects"
+    case aiSearch = "aiSearch"
+    case deepCrawl = "deepCrawl"
+    case knowledgeGraph = "knowledgeGraph"
+    case systemValidation = "systemValidation"
     
     var displayName: String {
         switch self {
@@ -80,6 +92,14 @@ enum SidebarItem: String, CaseIterable, Hashable {
             return "System Status"
         case .projects:
             return "Projects"
+        case .aiSearch:
+            return "AI Search"
+        case .deepCrawl:
+            return "Deep Crawl"
+        case .knowledgeGraph:
+            return "Knowledge Graph"
+        case .systemValidation:
+            return "System Validation"
         }
     }
     
@@ -97,6 +117,14 @@ enum SidebarItem: String, CaseIterable, Hashable {
             return "info.circle"
         case .projects:
             return "folder.badge.gearshape"
+        case .aiSearch:
+            return "sparkles"
+        case .deepCrawl:
+            return "network"
+        case .knowledgeGraph:
+            return "circle.grid.cross"
+        case .systemValidation:
+            return "checkmark.shield"
         }
     }
 }
@@ -107,38 +135,25 @@ struct EnhancedSidebarView: View {
     @ObservedObject private var processor = DocumentProcessor.shared
     
     var body: some View {
-        List(SidebarItem.allCases, id: \.self, selection: $selection) { item in
-            NavigationLink(value: item) {
-                HStack {
-                    Image(systemName: item.iconName)
-                        .frame(width: 20)
-                        .foregroundColor(selection == item ? .white : .primary)
-                    
-                    Text(item.displayName)
-                        .foregroundColor(selection == item ? .white : .primary)
-                    
-                    Spacer()
-                    
-                    if item == .library {
-                        Text("\(library.documents.count)")
-                            .font(.caption)
-                            .foregroundColor(selection == item ? .white.opacity(0.4) : .secondary)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(selection == item ? Color.clear.opacity(0.2) : Color.blue.opacity(0.1))
-                            .cornerRadius(8)
-                    } else if item == .importItem && !processor.processingQueue.isEmpty {
-                        Text("\(processor.processingQueue.count)")
-                            .font(.caption)
-                            .foregroundColor(selection == item ? .white.opacity(0.8) : .secondary)
-                            .padding(.horizontal, 6)
-                            .padding(.vertical, 2)
-                            .background(selection == item ? Color.white.opacity(0.2) : Color.orange.opacity(0.1))
-                            .cornerRadius(8)
-                    }
-                }
+        List(selection: $selection) {
+            Section(header: Text("Documents")) {
+                sidebarRow(for: .library)
+                sidebarRow(for: .importItem)
             }
-            .tag(item)
+            Section(header: Text("AI & Search")) {
+                sidebarRow(for: .aiSearch)
+                sidebarRow(for: .deepCrawl)
+                sidebarRow(for: .knowledgeGraph)
+            }
+            Section(header: Text("Projects & Agents")) {
+                sidebarRow(for: .projects)
+            }
+            Section(header: Text("System")) {
+                sidebarRow(for: .status)
+                sidebarRow(for: .systemValidation)
+                sidebarRow(for: .logs)
+                sidebarRow(for: .settings)
+            }
         }
         .navigationTitle("DocShop")
         .listStyle(.sidebar)
@@ -147,6 +162,38 @@ struct EnhancedSidebarView: View {
                 selection = .library
             }
         }
+    }
+    
+    @ViewBuilder
+    private func sidebarRow(for item: SidebarItem) -> some View {
+        NavigationLink(value: item) {
+            HStack {
+                Image(systemName: item.iconName)
+                    .frame(width: 20)
+                    .foregroundColor(selection == item ? .white : .primary)
+                Text(item.displayName)
+                    .foregroundColor(selection == item ? .white : .primary)
+                Spacer()
+                if item == .library {
+                    Text("\(library.documents.count)")
+                        .font(.caption)
+                        .foregroundColor(selection == item ? .white.opacity(0.4) : .secondary)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(selection == item ? Color.clear.opacity(0.2) : Color.blue.opacity(0.1))
+                        .cornerRadius(8)
+                } else if item == .importItem && !processor.processingQueue.isEmpty {
+                    Text("\(processor.processingQueue.count)")
+                        .font(.caption)
+                        .foregroundColor(selection == item ? .white.opacity(0.8) : .secondary)
+                        .padding(.horizontal, 6)
+                        .padding(.vertical, 2)
+                        .background(selection == item ? Color.white.opacity(0.2) : Color.orange.opacity(0.1))
+                        .cornerRadius(8)
+                }
+            }
+        }
+        .tag(item)
     }
 }
 

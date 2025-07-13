@@ -51,6 +51,7 @@ struct MarkdownViewerView: View {
                 }
             }
         }
+        .glassy()
     }
 }
 

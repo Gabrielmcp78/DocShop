@@ -31,6 +31,7 @@ struct LogViewerView: View {
                 .background(Color(.textBackgroundColor))
             }
         }
+        .glassy()
         .onAppear(perform: loadLog)
     }
     

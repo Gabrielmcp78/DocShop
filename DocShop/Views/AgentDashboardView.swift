@@ -29,6 +29,7 @@ struct AgentDashboardView: View {
                 }
             }
         }
+        .glassy()
     }
     
     private func color(for status: AgentStatus) -> Color {

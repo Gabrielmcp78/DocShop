@@ -146,6 +146,7 @@ struct DocumentDetailView: View {
         .onAppear {
             loadContent()
         }
+        .glassy()
     }
     
     private func loadContent() {

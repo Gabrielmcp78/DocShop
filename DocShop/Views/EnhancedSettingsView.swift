@@ -21,6 +21,7 @@ struct EnhancedSettingsView: View {
             }
             .padding(16)
         }
+        .glassy()
         .background(Color.clear)
         .navigationTitle("Settings")
     }
