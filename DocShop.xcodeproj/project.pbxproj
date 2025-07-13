@@ -10,6 +10,7 @@
 		434FB8EB2E22D75900AA4B57 /* FoundationModels.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 434FB8EA2E22D75900AA4B57 /* FoundationModels.framework */; };
 		434FB8ED2E22D7A300AA4B57 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 434FB8EC2E22D7A300AA4B57 /* SwiftUI.framework */; };
 		437444E52E107EEB0063FED6 /* SwiftSoup in Frameworks */ = {isa = PBXBuildFile; productRef = 437444E42E107EEB0063FED6 /* SwiftSoup */; };
+		439363D12E23DC4300A8CD47 /* VisualEffects in Frameworks */ = {isa = PBXBuildFile; productRef = 439363D02E23DC4300A8CD47 /* VisualEffects */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -46,6 +47,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				437444E52E107EEB0063FED6 /* SwiftSoup in Frameworks */,
+				439363D12E23DC4300A8CD47 /* VisualEffects in Frameworks */,
 				434FB8ED2E22D7A300AA4B57 /* SwiftUI.framework in Frameworks */,
 				434FB8EB2E22D75900AA4B57 /* FoundationModels.framework in Frameworks */,
 			);
@@ -101,6 +103,7 @@
 			name = DocShop;
 			packageProductDependencies = (
 				437444E42E107EEB0063FED6 /* SwiftSoup */,
+				439363D02E23DC4300A8CD47 /* VisualEffects */,
 			);
 			productName = DocShop;
 			productReference = 4345A80F2E0FF5FA002D6A3F /* DocShop.app */;
@@ -132,6 +135,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				437444E32E107EEB0063FED6 /* XCRemoteSwiftPackageReference "SwiftSoup" */,
+				439363CF2E23DC4300A8CD47 /* XCRemoteSwiftPackageReference "VisualEffects" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 4345A8102E0FF5FA002D6A3F /* Products */;
@@ -303,7 +307,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "-.DocShop";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -338,7 +342,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.1;
 				ONLY_ACTIVE_ARCH = NO;
 				PRODUCT_BUNDLE_IDENTIFIER = "-.DocShop";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -384,6 +388,14 @@
 				minimumVersion = 2.8.8;
 			};
 		};
+		439363CF2E23DC4300A8CD47 /* XCRemoteSwiftPackageReference "VisualEffects" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/twostraws/VisualEffects";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.0.3;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -391,6 +403,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 437444E32E107EEB0063FED6 /* XCRemoteSwiftPackageReference "SwiftSoup" */;
 			productName = SwiftSoup;
+		};
+		439363D02E23DC4300A8CD47 /* VisualEffects */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 439363CF2E23DC4300A8CD47 /* XCRemoteSwiftPackageReference "VisualEffects" */;
+			productName = VisualEffects;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

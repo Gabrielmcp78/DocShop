@@ -1,7 +1,6 @@
 import Foundation
 import PDFKit
 // import Down, SwiftSoup, Yams, Vision, etc. as needed
-import DocShop // or import the correct module if needed
 
 class DocumentIngestionManager {
     static let shared = DocumentIngestionManager()

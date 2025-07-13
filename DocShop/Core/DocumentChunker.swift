@@ -10,8 +10,8 @@ struct DocumentChunk: Identifiable, Codable {
     let type: DocumentChunkType
     let content: String
     let position: Int
-    let metadata: [String: String] // e.g., heading level, language, etc.
-    let tags: [String]
+    var metadata: [String: String] // e.g., heading level, language, etc.
+    var tags: [String]
 }
 
 class DocumentChunker {

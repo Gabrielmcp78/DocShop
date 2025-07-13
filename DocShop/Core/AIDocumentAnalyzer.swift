@@ -223,6 +223,33 @@ class AIDocumentAnalyzer: ObservableObject {
             return nil
         }
     }
+    
+    /// AI-driven decision: Should we continue deep crawling?
+    func shouldContinueDeepCrawl(currentLinks: [RelevantLink], crawledURLs: [String], currentContent: String, documentTitle: String) async -> Bool {
+        guard isAIAvailable else { return false }
+        do {
+            let linksList = currentLinks.prefix(20).map { $0.url }.joined(separator: "\n")
+            let crawledList = crawledURLs.prefix(50).joined(separator: ", ")
+            let session = LanguageModelSession(
+                instructions: Instructions("")
+            )
+            let prompt = """
+            You are an expert documentation crawler. Given the following context, decide if there is more valuable documentation to collect by crawling deeper:
+            - Current document title: \(documentTitle)
+            - Current content summary: \(String(currentContent.prefix(500)))
+            - Links found on this page (filtered for relevance):\n\(linksList)
+            - URLs already crawled: \(crawledList)
+            
+            If there are more links that likely lead to additional, uncrawled, and valuable documentation (not just navigation, repeated, or irrelevant pages), respond with YES. If the documentation is already complete or further crawling would be redundant or low-value, respond with NO. Only respond with YES or NO.
+            """
+            let response = try await session.respond(to: prompt, generating: String.self)
+            let answer = response.content.trimmingCharacters(in: .whitespacesAndNewlines).uppercased()
+            return answer.hasPrefix("Y")
+        } catch {
+            logger.error("Failed to determine deep crawl continuation: \(error)")
+            return false
+        }
+    }
 }
 
 // MARK: - AI Data Models

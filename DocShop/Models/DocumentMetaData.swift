@@ -134,9 +134,6 @@ struct DocumentMetaData: Identifiable, Codable, Hashable {
         // Always allow if different import method
         if importMethod != newMethod { return true }
         
-        // Allow if enabling deep crawl and we haven't crawled before
-        if enableDeepCrawl && importMethod != .deepCrawl { return true }
-        
         // Allow if enabling JS rendering and we haven't used it before
         if jsRenderingEnabled && !wasRenderedWithJS { return true }
         
@@ -189,7 +186,6 @@ enum DocumentContentType: String, Codable, CaseIterable {
 
 enum ImportMethod: String, Codable, CaseIterable {
     case manual = "manual"
-    case deepCrawl = "deepCrawl"
     case update = "update"
     case jsRendering = "jsRendering"
     
@@ -197,8 +193,6 @@ enum ImportMethod: String, Codable, CaseIterable {
         switch self {
         case .manual:
             return "Manual Import"
-        case .deepCrawl:
-            return "Deep Crawl"
         case .update:
             return "Content Update"
         case .jsRendering:

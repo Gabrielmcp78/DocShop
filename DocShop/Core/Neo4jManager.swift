@@ -15,7 +15,7 @@ class Neo4jManager {
             "title": document.title,
             "author": document.author,
             "type": document.type.rawValue,
-            "tags": document.tags,
+            "tags": document.tags.joined(separator: ","),
             "importedAt": ISO8601DateFormatter().string(from: document.importedAt)
         ]
         runCypher(cypher, params: params, completion: completion)
@@ -30,7 +30,7 @@ class Neo4jManager {
             "content": chunk.content,
             "position": chunk.position,
             "metadata": chunk.metadata,
-            "tags": chunk.tags
+            "tags": chunk.tags.joined(separator: ",")
         ]
         runCypher(cypher, params: params, completion: completion)
     }
@@ -111,6 +111,71 @@ class Neo4jManager {
         runCypherQuery(cypher, params: params, completion: completion)
     }
     
+    // MARK: - Knowledge Graph Fetch
+    func getAllGraphNodesAndEdges(completion: @escaping (Result<([GraphNode], [GraphEdge]), Error>) -> Void) {
+        let cypher = """
+        MATCH (n) OPTIONAL MATCH (n)-[r]->(m) RETURN n, r, m
+        """
+        runCypherQuery(cypher, params: [:]) { result in
+            switch result {
+            case .success(let dataArr):
+                var nodes: [GraphNode] = []
+                var edges: [GraphEdge] = []
+                var nodeIDs = Set<String>()
+                for row in dataArr {
+                    if let n = row["n"] as? [String: Any], let node = GraphNode.fromNeo4j(n) {
+                        if !nodeIDs.contains(node.id) {
+                            nodes.append(node)
+                            nodeIDs.insert(node.id)
+                        }
+                    }
+                    if let m = row["m"] as? [String: Any], let node = GraphNode.fromNeo4j(m) {
+                        if !nodeIDs.contains(node.id) {
+                            nodes.append(node)
+                            nodeIDs.insert(node.id)
+                        }
+                    }
+                    if let r = row["r"] as? [String: Any],
+                       let from = (row["n"] as? [String: Any])?["id"] as? String,
+                       let to = (row["m"] as? [String: Any])?["id"] as? String,
+                       let type = r["type"] as? String? ?? r["label"] as? String? ?? nil {
+                        edges.append(GraphEdge(from: from, to: to, type: type))
+                    }
+                }
+                completion(.success((nodes, edges)))
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
+    }
+
+    // MARK: - GraphNode/GraphEdge Structs
+    struct GraphNode: Identifiable, Hashable {
+        let id: String
+        let label: String
+        let type: String
+        static func fromNeo4j(_ dict: [String: Any]) -> GraphNode? {
+            guard let id = dict["id"] as? String else { return nil }
+            let label = dict["title"] as? String ?? dict["name"] as? String ?? id
+            let typeStr: String
+            if let type = dict["type"] as? String {
+                typeStr = type
+            } else if let labels = dict["labels"] as? [String], let firstLabel = labels.first {
+                typeStr = firstLabel
+            } else {
+                typeStr = "Unknown"
+            }
+            return GraphNode(id: id, label: label, type: typeStr)
+        }
+    }
+
+    struct GraphEdge: Identifiable, Hashable {
+        let id = UUID()
+        let from: String
+        let to: String
+        let type: String
+    }
+    
     // MARK: - Cypher Execution
     private func runCypher(_ cypher: String, params: [String: Any], completion: @escaping (Result<Void, Error>) -> Void) {
         let payload: [String: Any] = [
@@ -189,3 +254,4 @@ class Neo4jManager {
         task.resume()
     }
 } 
+

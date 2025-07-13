@@ -24,7 +24,13 @@ class JavaScriptRenderer: NSObject, ObservableObject {
         let configuration = WKWebViewConfiguration()
         
         // Enable JavaScript
-        configuration.preferences.javaScriptEnabled = true
+        if #available(macOS 11.0, *) {
+            let webpagePreferences = WKWebpagePreferences()
+            webpagePreferences.allowsContentJavaScript = true
+            configuration.defaultWebpagePreferences = webpagePreferences
+        } else {
+            configuration.preferences.javaScriptEnabled = true
+        }
         
         // Disable images and media to speed up loading
         configuration.preferences.setValue(false, forKey: "allowsInlineMediaPlayback")

@@ -13,27 +13,25 @@ struct ContentView: View {
             Group {
                 switch selectedSidebarItem {
                 case .library:
-                    LibraryView()
+                    AnyView(LibraryView())
                 case .importItem:
-                    DocumentDropView()
+                    AnyView(DocumentDropView())
                 case .settings:
-                    EnhancedSettingsView()
+                    AnyView(EnhancedSettingsView())
                 case .logs:
-                    LogViewerView()
+                    AnyView(LogViewerView())
                 case .status:
-                    SystemStatusView()
+                    AnyView(SystemStatusView())
                 case .projects:
-                    ProjectOrchestrationView()
+                    AnyView(ProjectOrchestrationView())
                 case .aiSearch:
-                    AISearchView()
-                case .deepCrawl:
-                    DeepCrawlView()
-                case .knowledgeGraph:
-                    KnowledgeGraphView()
-                case .systemValidation:
-                    SystemValidationView()
+                    AnyView(AISearchView())
                 case .none:
-                    EmptyStateView()
+                    AnyView(EmptyStateView())
+                case .some(.knowledgeGraph):
+                    AnyView(Text("Knowledge Graph View")) // Replace with real view if available
+                case .some(.systemValidation):
+                    AnyView(Text("System Validation View"))
                 }
             }
             .navigationSplitViewColumnWidth(min: 400, ideal: 600, max: .infinity)
@@ -74,7 +72,6 @@ enum SidebarItem: String, CaseIterable, Hashable {
     case status = "status"
     case projects = "projects"
     case aiSearch = "aiSearch"
-    case deepCrawl = "deepCrawl"
     case knowledgeGraph = "knowledgeGraph"
     case systemValidation = "systemValidation"
     
@@ -94,8 +91,6 @@ enum SidebarItem: String, CaseIterable, Hashable {
             return "Projects"
         case .aiSearch:
             return "AI Search"
-        case .deepCrawl:
-            return "Deep Crawl"
         case .knowledgeGraph:
             return "Knowledge Graph"
         case .systemValidation:
@@ -119,8 +114,6 @@ enum SidebarItem: String, CaseIterable, Hashable {
             return "folder.badge.gearshape"
         case .aiSearch:
             return "sparkles"
-        case .deepCrawl:
-            return "network"
         case .knowledgeGraph:
             return "circle.grid.cross"
         case .systemValidation:
@@ -142,7 +135,6 @@ struct EnhancedSidebarView: View {
             }
             Section(header: Text("AI & Search")) {
                 sidebarRow(for: .aiSearch)
-                sidebarRow(for: .deepCrawl)
                 sidebarRow(for: .knowledgeGraph)
             }
             Section(header: Text("Projects & Agents")) {
@@ -177,18 +169,18 @@ struct EnhancedSidebarView: View {
                 if item == .library {
                     Text("\(library.documents.count)")
                         .font(.caption)
-                        .foregroundColor(selection == item ? .white.opacity(0.4) : .secondary)
+                        .foregroundColor(selection == item ? .white.opacity(0.05) : .secondary)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(selection == item ? Color.clear.opacity(0.2) : Color.blue.opacity(0.1))
+                        .background(selection == item ? Color.clear.opacity(0.3) : Color.clear.opacity(0.07))
                         .cornerRadius(8)
                 } else if item == .importItem && !processor.processingQueue.isEmpty {
                     Text("\(processor.processingQueue.count)")
                         .font(.caption)
-                        .foregroundColor(selection == item ? .white.opacity(0.8) : .secondary)
+                        .foregroundColor(selection == item ? .white.opacity(0.2) : .secondary)
                         .padding(.horizontal, 6)
                         .padding(.vertical, 2)
-                        .background(selection == item ? Color.white.opacity(0.2) : Color.orange.opacity(0.1))
+                        .background(selection == item ? Color.white.opacity(0.07) : Color.orange.opacity(0.1))
                         .cornerRadius(8)
                 }
             }
@@ -220,4 +212,3 @@ struct EmptyStateView: View {
 #Preview {
     ContentView()
 }
-

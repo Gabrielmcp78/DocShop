@@ -14,7 +14,6 @@ struct EnhancedSettingsView: View {
                     .fontWeight(.bold)
                     .foregroundColor(.primary)
                 
-                processingSettingsSection
                 javascriptRenderingSection
                 aiEnhancementSection
                 libraryManagementSection
@@ -25,76 +24,6 @@ struct EnhancedSettingsView: View {
         .background(Color.clear)
         .navigationTitle("Settings")
     }
-    
-    private var processingSettingsSection: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack {
-                Image(systemName: "gearshape.fill")
-                    .foregroundColor(.blue)
-                    .font(.title2)
-                Text("Processing & Deep Scraping")
-                    .font(.headline)
-                    .fontWeight(.semibold)
-            }
-            
-            VStack(alignment: .leading, spacing: 12) {
-                Toggle("Enable Deep Scraping", isOn: $config.enableDeepCrawling)
-                    .toggleStyle(LiquidGlassToggleStyle())
-                
-                if config.enableDeepCrawling {
-                    VStack(alignment: .leading, spacing: 8) {
-                        HStack {
-                            Text("Max Crawl Depth")
-                                .font(.subheadline)
-                            Spacer()
-                            Text("\(config.maxCrawlDepth)")
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                        }
-                        Slider(value: Binding(
-                            get: { Double(config.maxCrawlDepth) },
-                            set: { config.maxCrawlDepth = Int($0) }
-                        ), in: 1...10, step: 1)
-                        .accentColor(.blue)
-                    }
-                    .padding(.leading, 8)
-                    
-                    Toggle("Follow External Links", isOn: $config.followExternalLinks)
-                        .toggleStyle(LiquidGlassToggleStyle())
-                }
-                
-                Divider()
-                    .opacity(0.3)
-                
-                Toggle("Allow Duplicate Documents", isOn: $config.allowDuplicates)
-                    .toggleStyle(LiquidGlassToggleStyle())
-                
-                if !config.allowDuplicates {
-                    Toggle("Smart Duplicate Handling", isOn: $config.smartDuplicateHandling)
-                        .toggleStyle(LiquidGlassToggleStyle())
-                        .padding(.leading, 8)
-                    
-                    if config.smartDuplicateHandling {
-                        Toggle("Check for Content Updates", isOn: $config.checkForUpdates)
-                            .toggleStyle(LiquidGlassToggleStyle())
-                            .padding(.leading, 16)
-                    }
-                }
-            }
-        }
-        .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(.ultraThinMaterial)
-                .shadow(color: .gray.opacity(0.5), radius: 8, x: 0, y: 4)
-        )
-        .scaleEffect(hoveredSection == "processing" ? 1.02 : 1.0)
-        .animation(.easeInOut(duration: 0.8), value: hoveredSection)
-        .onHover { isHovered in
-            hoveredSection = isHovered ? "processing" : nil
-        }
-    }
-    
     
     private var javascriptRenderingSection: some View {
         VStack(alignment: .leading, spacing: 12) {
@@ -108,8 +37,11 @@ struct EnhancedSettingsView: View {
             }
             
             VStack(alignment: .leading, spacing: 12) {
-                Toggle("Enable JavaScript Rendering", isOn: $config.enableJavaScriptRendering)
-                    .toggleStyle(LiquidGlassToggleStyle())
+                Toggle("Enable JavaScript Rendering", isOn: Binding(
+                    get: { config.enableJavaScriptRendering },
+                    set: { config.enableJavaScriptRendering = $0 }
+                ))
+                .toggleStyle(LiquidGlassToggleStyle())
                 
                 Text("Render JavaScript-heavy sites for complete content extraction")
                     .font(.caption)
@@ -117,9 +49,12 @@ struct EnhancedSettingsView: View {
                     .fixedSize(horizontal: false, vertical: true)
                 
                 if config.enableJavaScriptRendering {
-                    Toggle("Auto-detect JS requirement", isOn: $config.autoDetectJSRequirement)
-                        .toggleStyle(LiquidGlassToggleStyle())
-                        .padding(.leading, 8)
+                    Toggle("Auto-detect JS requirement", isOn: Binding(
+                        get: { config.autoDetectJSRequirement },
+                        set: { config.autoDetectJSRequirement = $0 }
+                    ))
+                    .toggleStyle(LiquidGlassToggleStyle())
+                    .padding(.leading, 8)
                     
                     VStack(alignment: .leading, spacing: 6) {
                         HStack {
@@ -130,7 +65,10 @@ struct EnhancedSettingsView: View {
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }
-                        Slider(value: $config.jsRenderingTimeout, in: 10...120, step: 5)
+                        Slider(value: Binding(
+                            get: { config.jsRenderingTimeout },
+                            set: { config.jsRenderingTimeout = $0 }
+                        ), in: 10...120, step: 5)
                             .accentColor(.gray)
                     }
                     .padding(.leading, 8)

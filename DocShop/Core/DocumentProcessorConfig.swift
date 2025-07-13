@@ -18,13 +18,6 @@ class DocumentProcessorConfig: ObservableObject {
     @Published var enableLogging: Bool = true
     @Published var maxLogFileSize: Int = 10 * 1024 * 1024 // 10MB
     
-    // Deep crawling settings
-    @Published var enableDeepCrawling: Bool = true
-    @Published var maxCrawlDepth: Int = 3
-    @Published var maxPagesPerDomain: Int = 50
-    @Published var crawlDelay: TimeInterval = 1.0
-    @Published var followExternalLinks: Bool = false
-    
     // JavaScript rendering settings
     @Published var enableJavaScriptRendering: Bool = true
     @Published var jsRenderingTimeout: TimeInterval = 60.0
@@ -64,11 +57,6 @@ class DocumentProcessorConfig: ObservableObject {
             blockedDomains = Set(config.blockedDomains)
             enableLogging = config.enableLogging
             maxLogFileSize = config.maxLogFileSize
-            enableDeepCrawling = config.enableDeepCrawling
-            maxCrawlDepth = config.maxCrawlDepth
-            maxPagesPerDomain = config.maxPagesPerDomain
-            crawlDelay = config.crawlDelay
-            followExternalLinks = config.followExternalLinks
             enableJavaScriptRendering = config.enableJavaScriptRendering
             jsRenderingTimeout = config.jsRenderingTimeout
             autoDetectJSRequirement = config.autoDetectJSRequirement
@@ -91,11 +79,6 @@ class DocumentProcessorConfig: ObservableObject {
             blockedDomains: Array(blockedDomains),
             enableLogging: enableLogging,
             maxLogFileSize: maxLogFileSize,
-            enableDeepCrawling: enableDeepCrawling,
-            maxCrawlDepth: maxCrawlDepth,
-            maxPagesPerDomain: maxPagesPerDomain,
-            crawlDelay: crawlDelay,
-            followExternalLinks: followExternalLinks,
             enableJavaScriptRendering: enableJavaScriptRendering,
             jsRenderingTimeout: jsRenderingTimeout,
             autoDetectJSRequirement: autoDetectJSRequirement
@@ -121,11 +104,6 @@ class DocumentProcessorConfig: ObservableObject {
         blockedDomains = []
         enableLogging = true
         maxLogFileSize = 10 * 1024 * 1024
-        enableDeepCrawling = true
-        maxCrawlDepth = 10
-        maxPagesPerDomain = 150
-        crawlDelay = 1.0
-        followExternalLinks = false
         enableJavaScriptRendering = true
         jsRenderingTimeout = 30.0
         autoDetectJSRequirement = true
@@ -156,11 +134,6 @@ private struct ConfigData: Codable {
     let blockedDomains: [String]
     let enableLogging: Bool
     let maxLogFileSize: Int
-    let enableDeepCrawling: Bool
-    let maxCrawlDepth: Int
-    let maxPagesPerDomain: Int
-    let crawlDelay: TimeInterval
-    let followExternalLinks: Bool
     let enableJavaScriptRendering: Bool
     let jsRenderingTimeout: TimeInterval
     let autoDetectJSRequirement: Bool

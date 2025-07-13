@@ -24,6 +24,7 @@ class DocumentProcessor: ObservableObject {
     
     private var currentTask: Task<Void, Never>?
     private let processingQueue_internal = DispatchQueue(label: "document.processing", qos: .userInitiated)
+    private var crawledURLs = Set<String>()
     
     private init() {}
     
@@ -40,22 +41,25 @@ class DocumentProcessor: ObservableObject {
         await processQueue()
     }
     
-    func importDocument(from urlString: String, forceReimport: Bool = false) async throws -> DocumentMetaData {
+    func importDocument(from urlString: String, forceReimport: Bool = false, importMethod: ImportMethod = .manual) async throws -> DocumentMetaData {
         guard let url = URL(string: urlString) else {
             throw DocumentError.invalidURL(urlString)
         }
-        
-        // Determine import method
-        let importMethod: ImportMethod = config.enableDeepCrawling ? .deepCrawl : .manual
-        
-        // Check for smart duplicate handling
+        crawledURLs = [] // Reset for each top-level import
+        let doc = try await importDocumentWithCrawl(url: url, depth: 0, forceReimport: forceReimport, importMethod: importMethod)
+        return doc
+    }
+
+    private func importDocumentWithCrawl(url: URL, depth: Int, forceReimport: Bool, importMethod: ImportMethod) async throws -> DocumentMetaData {
+        guard !crawledURLs.contains(url.absoluteString) else { throw DocumentError.parsingError("Already crawled: \(url)") }
+        crawledURLs.insert(url.absoluteString)
+        // Duplicate handling as before
         if !forceReimport {
             let decision = await duplicateHandler.shouldAllowImport(
                 url: url,
                 importMethod: importMethod,
                 jsRenderingEnabled: config.enableJavaScriptRendering
             )
-            
             switch decision {
             case .block(let reason):
                 logger.info("Import blocked: \(reason.message)")
@@ -63,20 +67,26 @@ class DocumentProcessor: ObservableObject {
             case .allow(let reason):
                 logger.info("Import allowed: \(reason.message)")
             case .prompt:
-                // For now, we'll allow it - UI can handle prompting later
                 logger.info("Import requires user confirmation but proceeding")
             }
         }
-        
         let document = try await processDocument(url: url, importMethod: importMethod)
-        
-        // Start deep crawl if enabled
-        if config.enableDeepCrawling {
-            Task {
-                await DeepCrawler.shared.startDeepCrawl(from: url)
+        // --- AI-driven deep crawl logic ---
+        if let links = document.extractedLinks, !links.isEmpty {
+            let filteredLinks = await aiAnalyzer.identifyRelevantLinks(from: links, documentContent: document.summary ?? "", documentTitle: document.title)
+            // Ask AI if we should continue crawling deeper
+            let shouldContinue = await aiAnalyzer.shouldContinueDeepCrawl(currentLinks: filteredLinks, crawledURLs: Array(crawledURLs), currentContent: document.summary ?? "", documentTitle: document.title)
+            if shouldContinue {
+                for link in filteredLinks.prefix(15) { // Limit breadth per level
+                    guard let nextURL = URL(string: link.url), nextURL.host == url.host else { continue }
+                    do {
+                        _ = try await importDocumentWithCrawl(url: nextURL, depth: depth + 1, forceReimport: false, importMethod: .update)
+                    } catch {
+                        logger.warning("Deep crawl failed for \(nextURL): \(error)")
+                    }
+                }
             }
         }
-        
         return document
     }
     
@@ -94,7 +104,7 @@ class DocumentProcessor: ObservableObject {
             await updateTaskStatus(taskId: task.id, status: .processing)
             
             do {
-                let document = try await processDocument(url: task.url)
+                let document = try await processDocument(url: task.url, importMethod: .manual)
                 await updateTaskStatus(taskId: task.id, status: .completed)
                 logger.info("Successfully processed document: \(document.title)")
             } catch {
@@ -1453,3 +1463,4 @@ struct CodeBlock {
     let language: String
     let context: String
 }
+

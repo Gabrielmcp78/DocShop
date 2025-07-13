@@ -58,11 +58,6 @@ class SmartDuplicateHandler {
             reasons.append(.differentImportMethod(from: existingDoc.importMethod, to: newImportMethod))
         }
         
-        // Check if enabling deep crawl for the first time
-        if newImportMethod == .deepCrawl && existingDoc.importMethod != .deepCrawl {
-            reasons.append(.enabledDeepCrawl)
-        }
-        
         // Check if enabling JavaScript rendering for the first time
         if jsRenderingEnabled && !existingDoc.wasRenderedWithJS {
             reasons.append(.enabledJavaScriptRendering)
@@ -82,13 +77,6 @@ class SmartDuplicateHandler {
         // Check if it's time for an update check
         if config.checkForUpdates && existingDoc.needsUpdateCheck(interval: config.updateCheckInterval) {
             reasons.append(.scheduledUpdateCheck)
-        }
-        
-        // Check if the existing document has no extracted links but deep crawl is now enabled
-        if config.enableDeepCrawling && 
-           (existingDoc.extractedLinks?.isEmpty ?? true) &&
-           newImportMethod == .deepCrawl {
-            reasons.append(.missingLinkExtraction)
         }
         
         if !reasons.isEmpty {
@@ -150,11 +138,9 @@ enum AllowReason {
     case newDocument
     case duplicatesEnabled
     case differentImportMethod(from: ImportMethod, to: ImportMethod)
-    case enabledDeepCrawl
     case enabledJavaScriptRendering
     case contentUpdated
     case scheduledUpdateCheck
-    case missingLinkExtraction
     case smartDuplicateReasons([AllowReason])
     
     var message: String {
@@ -165,16 +151,12 @@ enum AllowReason {
             return "Duplicates allowed in settings"
         case .differentImportMethod(let from, let to):
             return "Import method changed from \(from.displayName) to \(to.displayName)"
-        case .enabledDeepCrawl:
-            return "Deep crawl enabled - re-importing to extract links"
         case .enabledJavaScriptRendering:
             return "JavaScript rendering enabled - re-importing for complete content"
         case .contentUpdated:
             return "Content has been updated since last import"
         case .scheduledUpdateCheck:
             return "Scheduled update check - checking for new content"
-        case .missingLinkExtraction:
-            return "Re-importing to extract links for deep crawl"
         case .smartDuplicateReasons(let reasons):
             return "Smart duplicate handling: \(reasons.map { $0.message }.joined(separator: ", "))"
         }
@@ -202,3 +184,4 @@ enum PromptReason {
         }
     }
 }
+
