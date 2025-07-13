@@ -197,7 +197,7 @@ enum PromptReason {
     
     var message: String {
         switch self {
-        case .userConfirmationNeeded(let doc, let reasons):
+        case .userConfirmationNeeded(_, let reasons):
             return "Document exists. Re-import? Reasons: \(reasons.map { $0.message }.joined(separator: ", "))"
         }
     }

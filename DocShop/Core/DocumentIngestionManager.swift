@@ -1,22 +1,7 @@
 import Foundation
 import PDFKit
 // import Down, SwiftSoup, Yams, Vision, etc. as needed
-
-enum DocumentType {
-    case pdf, markdown, html, word, plaintext, code, openapi, image, unknown
-}
-
-struct IngestedDocument {
-    let id: UUID
-    let type: DocumentType
-    let url: URL
-    let originalFilename: String
-    let importedAt: Date
-    let title: String
-    let author: String
-    let tags: [String]
-    // Add more metadata as needed
-}
+import DocShop // or import the correct module if needed
 
 class DocumentIngestionManager {
     static let shared = DocumentIngestionManager()

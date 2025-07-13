@@ -100,7 +100,7 @@ class DeepCrawler: ObservableObject {
             
             do {
                 // Process the current page
-                let document = try await processor.importDocument(from: urlString)
+                _ = try await processor.importDocument(from: urlString)
                 
                 await MainActor.run {
                     crawledPages.insert(urlString)

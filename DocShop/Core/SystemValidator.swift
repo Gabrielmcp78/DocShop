@@ -111,7 +111,7 @@ class SystemValidator {
     }
     
     private func validateConfigurations() async -> ([ValidationIssue], [ValidationIssue]) {
-        var issues: [ValidationIssue] = []
+        let issues: [ValidationIssue] = []
         var warnings: [ValidationIssue] = []
         
         let config = DocumentProcessorConfig.shared

@@ -372,7 +372,7 @@ struct EnhancedDocumentRowView: View {
             onTap()
         }
         .contextMenu {
-            Button(action: {
+            Button(acti != nil
                 var updatedDoc = document
                 updatedDoc.toggleFavorite()
                 library.updateDocument(updatedDoc)

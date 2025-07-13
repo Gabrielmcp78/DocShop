@@ -179,7 +179,11 @@ class DocumentStorage {
             guard let self = self else { return }
             
             do {
-                let documentFiles = try FileManager.default.contentsOfDirectory(at: self.documentsFolder, includingPropertiesForKeys: nil)
+                _ = try FileManager.default
+                    .contentsOfDirectory(
+                        at: self.documentsFolder,
+                        includingPropertiesForKeys: nil
+                    )
                 let backupFiles = try FileManager.default.contentsOfDirectory(at: self.backupFolder, includingPropertiesForKeys: nil)
                 
                 // Remove backup files that don't have corresponding main files

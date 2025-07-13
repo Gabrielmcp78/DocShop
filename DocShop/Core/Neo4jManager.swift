@@ -66,30 +66,24 @@ class Neo4jManager {
     
     // MARK: - Node/Relationship Update & Delete
     func updateNodeLabel(nodeID: UUID, label: String, value: String, nodeType: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let cypher = "MATCH (n: {nodeType} {id: $id}) SET n. {label} = $value"
+        let cypher = "MATCH (n:\(nodeType) {id: $id}) SET n.\(label) = $value"
         let params: [String: Any] = [
             "id": nodeID.uuidString,
             "value": value
         ]
-        let statement = cypher.replacingOccurrences(of: "\u007f{nodeType}", with: nodeType).replacingOccurrences(of: "\u007f{label}", with: label)
-        runCypher(statement, params: params, completion: completion)
+        runCypher(cypher, params: params, completion: completion)
     }
     
     func deleteNode(nodeID: UUID, nodeType: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let cypher = "MATCH (n: {nodeType} {id: $id}) DETACH DELETE n"
-        let statement = cypher.replacingOccurrences(of: "\u007f{nodeType}", with: nodeType)
+        let cypher = "MATCH (n:\(nodeType) {id: $id}) DETACH DELETE n"
         let params: [String: Any] = ["id": nodeID.uuidString]
-        runCypher(statement, params: params, completion: completion)
+        runCypher(cypher, params: params, completion: completion)
     }
     
     func deleteRelationship(fromID: UUID, toID: UUID, relType: String, fromType: String, toType: String, completion: @escaping (Result<Void, Error>) -> Void) {
-        let cypher = "MATCH (a: {fromType} {id: $fromID})-[r: {relType}]->(b: {toType} {id: $toID}) DELETE r"
-        let statement = cypher
-            .replacingOccurrences(of: "\u007f{fromType}", with: fromType)
-            .replacingOccurrences(of: "\u007f{toType}", with: toType)
-            .replacingOccurrences(of: "\u007f{relType}", with: relType)
+        let cypher = "MATCH (a:\(fromType) {id: $fromID})-[r:\(relType)]->(b:\(toType) {id: $toID}) DELETE r"
         let params: [String: Any] = ["fromID": fromID.uuidString, "toID": toID.uuidString]
-        runCypher(statement, params: params, completion: completion)
+        runCypher(cypher, params: params, completion: completion)
     }
     
     // MARK: - Search & Query
