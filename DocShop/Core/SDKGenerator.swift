@@ -6,18 +6,45 @@ class SDKGenerator {
     private init() {}
     
     func generateSDK(from project: Project) async -> GeneratedSDK {
-        // TODO: Extract API specs, generate client libraries, docs, tests, package
-        fatalError("Not implemented")
+        // Extract API specifications from project documents
+        let apiSpec = await extractAPISpecifications(from: project.documents)
+        // Generate client libraries for all supported languages
+        var libraries: [ClientLibrary] = []
+        for lang in ProgrammingLanguage.allCases {
+            let lib = await generateClientLibrary(for: apiSpec, language: lang)
+            libraries.append(lib)
+        }
+        // Generate documentation and tests (stubbed for now)
+        let documentation = "# SDK Documentation\n\nGenerated for project \(project.name)"
+        let tests = ["// TODO: Add language-specific tests"]
+        // Package SDK (stub: no real packaging yet)
+        let packageURL: URL? = nil
+        return GeneratedSDK(libraries: libraries, documentation: documentation, tests: tests, packageURL: packageURL)
     }
     
     func extractAPISpecifications(from documents: [DocumentMetaData]) async -> APISpecification {
-        // TODO: Parse technical docs for API endpoints, data models, schemas
-        fatalError("Not implemented")
+        // Parse technical docs for API endpoints, data models, schemas (stub: extract from doc metadata)
+        var endpoints: [APIEndpoint] = []
+        var dataModels: [APIDataModel] = []
+        var authMethods: [String] = []
+        for doc in documents {
+            // Example: look for OpenAPI/Swagger/YAML/REST hints in doc.summary
+            if doc.summary.lowercased().contains("openapi") || doc.summary.lowercased().contains("swagger") {
+                endpoints.append(APIEndpoint(path: "/example", method: "GET", parameters: ["id"], responseSchema: "ExampleResponse"))
+                dataModels.append(APIDataModel(name: "ExampleResponse", properties: ["id": "String", "name": "String"]))
+                authMethods.append("BearerToken")
+            }
+        }
+        return APISpecification(endpoints: endpoints, dataModels: dataModels, authMethods: authMethods)
     }
     
     func generateClientLibrary(for spec: APISpecification, language: ProgrammingLanguage) async -> ClientLibrary {
-        // TODO: Generate language-specific client code, docs, examples
-        fatalError("Not implemented")
+        // Generate language-specific client code, docs, examples (stub: create placeholder source file URLs)
+        let doc = "# \(language.rawValue.capitalized) SDK\n\nAuto-generated client for API."
+        let tempDir = FileManager.default.temporaryDirectory
+        let fileURL = tempDir.appendingPathComponent("\(language.rawValue)_client_stub.swift")
+        try? "// \(language.rawValue.capitalized) client stub".write(to: fileURL, atomically: true, encoding: .utf8)
+        return ClientLibrary(language: language, sourceFiles: [fileURL], documentation: doc)
     }
 }
 
