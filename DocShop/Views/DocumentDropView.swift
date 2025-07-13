@@ -208,7 +208,9 @@ struct DocumentDropView: View {
                     // Load new content for comparison
                     let newDoc = try await DocumentProcessor.shared.importDocument(from: urlString, forceReimport: true, importMethod: .update)
                     var updated = duplicate
-                    let newContent = try? DocumentStorage.shared.loadDocument(at: URL(fileURLWithPath: newDoc.filePath)) ?? ""
+                    let newContent = try? DocumentStorage.shared.loadDocument(
+                        at: URL(fileURLWithPath: newDoc.filePath)
+                    )
                     SmartDuplicateHandler.shared.updateDocumentForReimport(&updated, newMethod: .update, newContent: newContent ?? "", jsRenderingUsed: newDoc.wasRenderedWithJS)
                     DocLibraryIndex.shared.updateDocument(updated)
                     updateStatus = "Document updated."

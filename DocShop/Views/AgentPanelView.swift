@@ -121,9 +121,36 @@ struct AssignTaskSheet: View {
 extension ProjectTask {
     static var sampleTasks: [ProjectTask] {
         [
-            ProjectTask(id: UUID(), title: "Implement API", status: .pending),
-            ProjectTask(id: UUID(), title: "Write Docs", status: .pending),
-            ProjectTask(id: UUID(), title: "Add Tests", status: .pending)
+            ProjectTask(
+                id: UUID(),
+                title: "Implement API",
+                description: "",
+                status: .pending,
+                priority: .medium,
+                assignedAgentID: nil,
+                benchmarks: [],
+                context: TaskContext(info: "")
+            ),
+            ProjectTask(
+                id: UUID(),
+                title: "Write Docs",
+                description: "",
+                status: .pending,
+                priority: .medium,
+                assignedAgentID: nil,
+                benchmarks: [],
+                context: TaskContext(info: "")
+            ),
+            ProjectTask(
+                id: UUID(),
+                title: "Add Tests",
+                description: "",
+                status: .pending,
+                priority: .medium,
+                assignedAgentID: nil,
+                benchmarks: [],
+                context: TaskContext(info: "")
+            )
         ]
     }
 } 

@@ -51,8 +51,9 @@ struct DriftDetectionResult: Codable {
     let details: String
 } 
 
-struct BenchmarkResult: Codable {
+struct BenchmarkResult: Codable, Equatable, Hashable {
     let taskID: UUID
     let passed: Bool
     let details: String
 } 
+

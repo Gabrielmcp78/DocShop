@@ -29,7 +29,7 @@ class SDKGenerator {
         var authMethods: [String] = []
         for doc in documents {
             // Example: look for OpenAPI/Swagger/YAML/REST hints in doc.summary
-            if doc.summary.lowercased().contains("openapi") || doc.summary.lowercased().contains("swagger") {
+            if let summary = doc.summary?.lowercased(), summary.contains("openapi") || summary.contains("swagger") {
                 endpoints.append(APIEndpoint(path: "/example", method: "GET", parameters: ["id"], responseSchema: "ExampleResponse"))
                 dataModels.append(APIDataModel(name: "ExampleResponse", properties: ["id": "String", "name": "String"]))
                 authMethods.append("BearerToken")

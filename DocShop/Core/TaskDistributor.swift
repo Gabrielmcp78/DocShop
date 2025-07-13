@@ -31,15 +31,19 @@ class TaskDistributor {
     }
 }
 
-class BenchmarkEngine {
-    func runBenchmarks(for project: Project) {
+//class BenchmarkEngine {
+    //func runBenchmarks(for project: Project) {
         // Simulate running benchmarks for a project
-        for benchmark in project.benchmarks {
-            print("Running benchmark '", benchmark.criteria.rawValue, "' for project '", project.name, "'...")
+      //  for benchmark in project.benchmarks {
+        //    print("Running benchmark '", benchmark.criteria.rawValue, "' for project '", project.name, "'...")
             // Simulate result
-            let passed = Bool.random()
-            let result = BenchmarkResult(passed: passed, details: passed ? "Passed" : "Failed")
-            print("Benchmark '", benchmark.criteria.rawValue, "': ", result.details)
-        }
-    }
-} 
+         //   let passed = Bool.random()
+         //   let result = BenchmarkResult(
+          //      taskID: UUID(),
+         //       passed: passed,
+          //      details: passed ? "Passed" : "Failed"
+          //  )
+          //  print("Benchmark '", benchmark.criteria.rawValue, "': ", result.details)
+        
+    
+

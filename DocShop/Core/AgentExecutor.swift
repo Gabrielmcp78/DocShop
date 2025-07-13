@@ -21,10 +21,10 @@ class RemoteAgentExecutor: AgentExecutor {
                 // Simulate remote execution by calling agent.perform (in real use, this would be a network call)
                 agent.perform(task: task) { result in
                     // In real remote, handle network errors, serialization, etc.
-                    completion(TaskResult(success: result.success, output: "[Remote] " + (result.output ?? ""), error: result.error))
+                    completion(TaskResult(success: result.success, output: "[Remote] " + (result.output ?? ""), error: result.error ?? ""))
                 }
             } catch {
-                completion(TaskResult(success: false, output: nil, error: "Remote execution failed: \(error.localizedDescription)"))
+                completion(TaskResult(success: false, output: "", error: "Remote execution failed: \(error.localizedDescription)"))
             }
         }
     }

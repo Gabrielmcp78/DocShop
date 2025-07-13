@@ -12,7 +12,7 @@ class AgentOrchestrator: ObservableObject {
     private let taskDistributor = TaskDistributor()
     private let progressTracker = ProgressTracker()
     private let contextManager = ContextManager()
-    private let benchmarkEngine = BenchmarkEngine()
+   // private let benchmarkEngine = BenchmarkEngine()
     
     private init() {}
     

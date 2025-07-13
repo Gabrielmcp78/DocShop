@@ -59,14 +59,19 @@ enum ProjectTaskStatus: String, Codable, Hashable, CaseIterable {
 }
 
 struct Benchmark: Identifiable, Codable, Hashable {
+    static func == (lhs: Benchmark, rhs: Benchmark) -> Bool {
+        return lhs.id == rhs.id && lhs.criteria == rhs.criteria && lhs.result == rhs.result
+    }
+    
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+        hasher.combine(criteria)
+        hasher.combine(result)
+    }
+
     let id: UUID
     let criteria: BenchmarkCriteria
     var result: BenchmarkResult?
-}
-
-struct BenchmarkResult: Codable, Hashable {
-    let passed: Bool
-    let details: String
 }
 
 enum ProjectStatus: String, Codable, Hashable {

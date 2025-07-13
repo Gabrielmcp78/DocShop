@@ -29,7 +29,7 @@ class DevelopmentAgent: ObservableObject, Identifiable {
     func perform(task: ProjectTask, completion: @escaping (TaskResult) -> Void) {
         Task {
             self.currentTask = task
-            self.status = .inProgress
+            self.status = .working
             self.progress = 0.0
             do {
                 // Simulate progress
@@ -54,7 +54,7 @@ class DevelopmentAgent: ObservableObject, Identifiable {
                 completion(TaskResult(success: true, output: output, error: nil))
             } catch {
                 self.status = .error
-                completion(TaskResult(success: false, output: nil, error: error.localizedDescription))
+                completion(TaskResult(success: false, output: "", error: error.localizedDescription))
             }
             self.currentTask = nil
         }
